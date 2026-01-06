@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import torch
 import typer
+
 from my_project.data import corrupt_mnist
 from my_project.model import MyAwesomeModel
 

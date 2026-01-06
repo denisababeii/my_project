@@ -1,6 +1,6 @@
 import torch
-from torch import nn
 import typer
+from torch import nn
 
 
 class MyAwesomeModel(nn.Module):
