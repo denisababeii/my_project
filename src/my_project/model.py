@@ -1,7 +1,10 @@
+import os
 import torch
 import typer
 from torch import nn
-
+import hydra
+import logging
+log = logging.getLogger(__name__)
 
 class MyAwesomeModel(nn.Module):
     """My awesome model."""
@@ -25,9 +28,10 @@ class MyAwesomeModel(nn.Module):
         x = torch.flatten(x, 1)
         x = self.dropout(x)
         return self.fc1(x)
-
-
-if __name__ == "__main__":
+    
+@hydra.main(config_name="model_conf.yaml", config_path=f"{os.getcwd()}/configs")
+def main(cfg): 
+    torch.manual_seed(cfg.hyperparameters.seed)
     model = MyAwesomeModel()
     print(f"Model architecture: {model}")
     print(f"Number of parameters: {sum(p.numel() for p in model.parameters())}")
@@ -35,3 +39,6 @@ if __name__ == "__main__":
     dummy_input = torch.randn(1, 1, 28, 28)
     output = model(dummy_input)
     print(f"Output shape: {output.shape}")
+
+if __name__ == "__main__":
+    main()

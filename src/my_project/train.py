@@ -1,3 +1,4 @@
+import os
 import matplotlib.pyplot as plt
 import torch
 import typer
@@ -5,24 +6,29 @@ import typer
 from my_project.data import corrupt_mnist
 from my_project.model import MyAwesomeModel
 
+import hydra
+import logging
+log = logging.getLogger(__name__)
+
+
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
-
-def train(lr: float = 1e-3, batch_size: int = 32, epochs: int = 10) -> None:
+@hydra.main(config_name="training_conf.yaml", config_path=f"{os.getcwd()}/configs")
+def main(cfg) -> None:
     """Train a model on MNIST."""
     print("Training day and night")
-    print(f"{lr=}, {batch_size=}, {epochs=}")
+    print(f"{cfg.hyperparameters.lr}, {cfg.hyperparameters.batch_size}, {cfg.hyperparameters.epochs}")
 
     model = MyAwesomeModel().to(DEVICE)
     train_set, _ = corrupt_mnist()
 
-    train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=batch_size)
+    train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=cfg.hyperparameters.batch_size)
 
     loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=cfg.hyperparameters.lr)
 
     statistics = {"train_loss": [], "train_accuracy": []}
-    for epoch in range(epochs):
+    for epoch in range(cfg.hyperparameters.epochs):
         model.train()
         for i, (img, target) in enumerate(train_dataloader):
             img, target = img.to(DEVICE), target.to(DEVICE)
@@ -40,14 +46,14 @@ def train(lr: float = 1e-3, batch_size: int = 32, epochs: int = 10) -> None:
                 print(f"Epoch {epoch}, iter {i}, loss: {loss.item()}")
 
     print("Training complete")
-    torch.save(model.state_dict(), "models/model.pth")
+    torch.save(model.state_dict(), f"{os.getcwd()}/../../../models/model.pth")
     fig, axs = plt.subplots(1, 2, figsize=(15, 5))
     axs[0].plot(statistics["train_loss"])
     axs[0].set_title("Train loss")
     axs[1].plot(statistics["train_accuracy"])
     axs[1].set_title("Train accuracy")
-    fig.savefig("reports/figures/training_statistics.png")
+    fig.savefig(f"{os.getcwd()}/../../../reports/figures/training_statistics.png")
 
 
 if __name__ == "__main__":
-    typer.run(train)
+    main()
