@@ -1,0 +1,18 @@
+program: /Volumes/MASTER/Year1/MLOps/my_project/src/my_project/train_logger.py
+name: sweepdemo
+project: my_project
+entity: babeii-denisa-danmarks-tekniske-universitet-dtu
+method: bayes
+metric:
+    goal: minimize
+    name: validation_loss
+parameters:
+    lr:
+        min: 0.0001
+        max: 0.1
+        distribution: log_uniform_values
+    batch-size:
+        values: [16, 32, 64]
+    epochs:
+        values: [5, 10, 15]
+run_cap: 10
