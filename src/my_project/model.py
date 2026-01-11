@@ -1,12 +1,9 @@
-import os
+import pytorch_lightning as pl
 import torch
-import typer
 from torch import nn
-import hydra
-import logging
-log = logging.getLogger(__name__)
 
-class MyAwesomeModel(nn.Module):
+
+class MyAwesomeModel(pl.LightningModule):
     """My awesome model."""
 
     def __init__(self) -> None:
@@ -16,6 +13,8 @@ class MyAwesomeModel(nn.Module):
         self.conv3 = nn.Conv2d(64, 128, 3, 1)
         self.dropout = nn.Dropout(0.5)
         self.fc1 = nn.Linear(128, 10)
+
+        self.loss_fn = nn.CrossEntropyLoss()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass."""
@@ -28,10 +27,19 @@ class MyAwesomeModel(nn.Module):
         x = torch.flatten(x, 1)
         x = self.dropout(x)
         return self.fc1(x)
-    
-@hydra.main(config_name="model_conf.yaml", config_path=f"{os.getcwd()}/configs")
-def main(cfg): 
-    torch.manual_seed(cfg.hyperparameters.seed)
+
+    def training_step(self, batch):
+        """Training step."""
+        img, target = batch
+        y_pred = self(img)
+        return self.loss_fn(y_pred, target)
+
+    def configure_optimizers(self):
+        """Configure optimizer."""
+        return torch.optim.Adam(self.parameters(), lr=1e-3)
+
+
+if __name__ == "__main__":
     model = MyAwesomeModel()
     print(f"Model architecture: {model}")
     print(f"Number of parameters: {sum(p.numel() for p in model.parameters())}")
@@ -39,6 +47,3 @@ def main(cfg):
     dummy_input = torch.randn(1, 1, 28, 28)
     output = model(dummy_input)
     print(f"Output shape: {output.shape}")
-
-if __name__ == "__main__":
-    main()
