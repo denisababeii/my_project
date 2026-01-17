@@ -18,6 +18,11 @@ def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 5) -> None:
         project="corrupt_mnist",
         config={"lr": lr, "batch_size": batch_size, "epochs": epochs},
     )
+    
+    # When running with wandb sweep, use config from sweep
+    lr = wandb.config.lr
+    batch_size = wandb.config.batch_size
+    epochs = wandb.config.epochs
 
     model = MyAwesomeModel().to(DEVICE)
     train_set, _ = corrupt_mnist()
@@ -91,4 +96,11 @@ def train(lr: float = 0.001, batch_size: int = 32, epochs: int = 5) -> None:
         run.log_artifact(artifact)
 
 if __name__ == "__main__":
-    typer.run(train)
+    import sys
+    # If running with wandb agent, don't use typer
+    if len(sys.argv) > 1 and any(arg.startswith("--") for arg in sys.argv[1:]):
+        # Called by wandb agent with --key=value format
+        train()  # wandb.init will get config from sweep
+    else:
+        # Normal CLI usage with typer
+        typer.run(train)

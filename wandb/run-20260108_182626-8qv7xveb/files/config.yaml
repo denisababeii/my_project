@@ -1,0 +1,60 @@
+_wandb:
+    value:
+        cli_version: 0.23.1
+        e:
+            rf69uhq2pd3nzrc0w90pi4cmp1ijcl97:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 10
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "11811160064"
+                codePath: src/my_project/train_logger.py
+                codePathLocal: src/my_project/train_logger.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "218589863936"
+                email: babeii.denisa@yahoo.ro
+                executable: /Volumes/MASTER/Year1/MLOps/my_project/.venv/bin/python3
+                git:
+                    commit: c927630edf12d15a08c34a005793cd112d1adac6
+                    remote: https://github.com/denisababeii/my_project.git
+                host: mac.students.clients.local
+                memory:
+                    total: "17179869184"
+                os: macOS-26.1-arm64-arm-64bit
+                program: /Volumes/MASTER/Year1/MLOps/my_project/src/my_project/train_logger.py
+                python: CPython 3.11.1
+                root: /Volumes/MASTER/Year1/MLOps/my_project
+                startedAt: "2026-01-08T17:26:26.793134Z"
+                writerId: rf69uhq2pd3nzrc0w90pi4cmp1ijcl97
+        m: []
+        python_version: 3.11.1
+        t:
+            "1":
+                - 1
+                - 5
+                - 50
+                - 53
+            "2":
+                - 1
+                - 5
+                - 50
+                - 53
+            "3":
+                - 16
+            "4": 3.11.1
+            "5": 0.23.1
+            "12": 0.23.1
+            "13": darwin-arm64
+batch_size:
+    value: 32
+epochs:
+    value: 5
+lr:
+    value: 0.001
